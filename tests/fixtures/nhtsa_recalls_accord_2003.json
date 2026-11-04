@@ -1,0 +1,7 @@
+{"Count": 2, "Message": "Results returned successfully", "results": [
+ {"Manufacturer": "Example Motor Co.", "NHTSACampaignNumber": "99V000001", "parkIt": false, "parkOutSide": false, "overTheAirUpdate": false,
+  "ReportReceivedDate": "01/02/2020", "Component": "ELECTRICAL SYSTEM", "Summary": "A made-up wiring fault.", "Consequence": "Lights may fail.",
+  "Remedy": "Dealers will repair the wiring.", "Notes": "", "ModelYear": "2003", "Make": "HONDA", "Model": "ACCORD"},
+ {"Manufacturer": "Example Motor Co.", "NHTSACampaignNumber": "99V000002", "parkIt": true, "parkOutSide": false, "overTheAirUpdate": false,
+  "ReportReceivedDate": "03/04/2021", "Component": "AIR BAGS", "Summary": "A made-up air bag fault.", "Consequence": "Risk of injury.",
+  "Remedy": "Dealers will replace the part.", "Notes": "", "ModelYear": "2003", "Make": "HONDA", "Model": "ACCORD"}]}
