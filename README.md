@@ -36,7 +36,7 @@ Brands come from the recall title ("Acme Recalls …", "Acme Power Banks Recalle
 
 - 15 real recalls, one every 38th in CPSC's list, typed in as a shop might list them (the first six words of the recalled product's name): 12 flagged **check**, 3 not. All 3 misses were lines with no brand name in them ("Portable Camping Showers…", "Metal Wire Bristle Grill Brushes", "Male-to-Male Extension Cords"), which this matcher needs by design. None came out as **recalled**, because those product names don't carry model numbers.
 - 20 everyday products with no recall (unbranded, plus a few big brands like IKEA, Apple and Fisher-Price): none flagged.
-- The demo's example list (Dreo, Bodum, plus a Cuisinart grill brush and a Mainstays dresser): the Dreo heater **recalled** on brand and model, the other three **check**.
+- Four real recalled products typed as a shop would (a Dreo DR-HSH015 heater, a Bodum Chambord press, a Cuisinart grill brush and a Mainstays nine-drawer dresser): the Dreo heater came out **recalled** on brand and model, the other three **check**.
 
 That's a small check, not a measured accuracy. It shows the rules behave sensibly on real records; it doesn't prove they catch everything.
 
