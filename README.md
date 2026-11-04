@@ -32,7 +32,13 @@ Plain text rules (`recall_agent/match.py`):
 
 Brands come from the recall title ("Acme Recalls …", "Acme Power Banks Recalled …", "… Expands Recall of Acme …"), the first word of each product name, and the listed manufacturers, importers and distributors. A brand must match as whole words, so "Acmeville" doesn't match "Acme". Sizes like "10000mAh" or "12oz" don't count as model numbers, and plurals are folded ("brushes" matches "brush").
 
-On 4 November 2026 I ran a list of 20 everyday unbranded and big-brand products against the 575 CPSC recalls from the previous 12 months: none were flagged. That shows it doesn't raise false alarms on that list. It doesn't prove it catches everything; see "What this isn't".
+**Spot check on live data (4 November 2026, 575 CPSC recalls from the previous 12 months):**
+
+- 15 real recalls, one every 38th in CPSC's list, typed in as a shop might list them (the first six words of the recalled product's name): 12 flagged **check**, 3 not. All 3 misses were lines with no brand name in them ("Portable Camping Showers…", "Metal Wire Bristle Grill Brushes", "Male-to-Male Extension Cords"), which this matcher needs by design. None came out as **recalled**, because those product names don't carry model numbers.
+- 20 everyday products with no recall (unbranded, plus a few big brands like IKEA, Apple and Fisher-Price): none flagged.
+- The demo's example list (Dreo, Bodum, plus a Cuisinart grill brush and a Mainstays dresser): the Dreo heater **recalled** on brand and model, the other three **check**.
+
+That's a small check, not a measured accuracy. It shows the rules behave sensibly on real records; it doesn't prove they catch everything.
 
 There's no language model anywhere. The router is rules in `recall_agent/agent.py`, which makes it predictable and testable, and every decision can be shown on the page.
 
@@ -52,7 +58,7 @@ python web/build.py                                   # rebuild docs/demo.js aft
 - `tests/test_agent.py`: the full loop with each API answer taken from a fixture. Product lists go to CPSC and drop the instruction line; vehicles check the model list before the recall call; a typo leads to a question, not "no recalls"; "Civic Type R" falls back to NHTSA's "Civic" and says so; a bad VIN stops before any call; the call limit and host allowlist hold; and URL arguments are escaped.
 - `tests/test_page.py`: the published page embeds the current code, and its host allowlist matches the agent's.
 - The fixtures copy the APIs' real field names (checked on 4 November 2026). The products and companies in them are made up, so the tests can't be mistaken for claims about real products.
-- I also ran the page live on 4 November 2026 against all three services; the results are on the demo page.
+- I also ran the page live on 4 November 2026 against all three services (spot check above), including the typo and bad-VIN cases.
 
 CI runs lint, the tests and the page drift check on every push.
 
