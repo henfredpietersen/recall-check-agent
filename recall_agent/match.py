@@ -2,7 +2,8 @@
 
 Each catalogue line gets one of three verdicts:
 - "recalled":  the UPC matches, or the brand and a model code both match.
-- "check":     the brand matches and the product words overlap, or a long model code matches
+- "check":     the brand matches and at least two product words overlap (one, if the brand is two
+               words or more, like "Sweet Cubby"), or a long model code matches
                without the brand. A person should look.
 - "none":      nothing matched in the recalls checked. That is not the same as "safe".
 
@@ -34,7 +35,8 @@ NOT_BRAND = GENERIC | {"children", "child", "women", "womens", "men", "mens", "b
                        "wooden", "plastic", "glass", "metal", "stainless", "steel", "gas", "fabric", "cordless", "mini",
                        "large", "small", "these", "this", "certain", "various", "all", "two", "three", "one",
                        "nine", "six", "four", "five", "multiple", "assorted", "magnetic", "battery", "lithium", "dresser",
-                       "dressers", "space", "heaters", "heater", "power", "toy", "toys", "chest", "bike", "bikes"}
+                       "dressers", "space", "heaters", "heater", "power", "toy", "toys", "chest", "bike", "bikes", "male",
+                       "female", "model", "year", "new"}
 
 
 def words(text: str) -> list[str]:
@@ -164,7 +166,7 @@ def match_line(line: str, profiles: list[dict]) -> dict:
     best = None
     for p in profiles:
         reasons, verdict = [], None
-        brand = next((b for b in p["brands"] if _has_brand(lw, b)), None)
+        brand = max((b for b in p["brands"] if _has_brand(lw, b)), key=lambda b: (len(b.split()), b), default=None)
         shared_codes = sorted(lcodes & p["codes"])
         shared_words = sorted({stem(w) for w in lw} & p["product_words"])
         if lupcs & p["upcs"]:
@@ -173,7 +175,7 @@ def match_line(line: str, profiles: list[dict]) -> dict:
         if brand and shared_codes:
             verdict = "recalled"
             reasons += [f"brand “{brand}”", f"model {shared_codes[0]}"]
-        elif brand and len(shared_words) >= 2:
+        elif brand and (len(shared_words) >= 2 or (len(brand.split()) >= 2 and shared_words)):
             verdict = verdict or "check"
             reasons += [f"brand “{brand}”", "words " + ", ".join(shared_words[:4])]
         elif not brand and any(len(c) >= 6 for c in shared_codes):

@@ -111,3 +111,9 @@ def test_dba_name_is_a_brand():
     p = match.recall_profile({"Title": "Hairco Recalls Gas Grills", "Products": [{"Name": "Gas grills", "Type": ""}],
                               "Manufacturers": [{"Name": "Hairco LLC, of Newark, New Jersey, dba Zestro"}]})
     assert "zestro" in p["brands"]
+
+
+def test_two_word_brand_needs_only_one_product_word(profiles):
+    # "Acme Home" is two words; "heater" alone is enough with it, but not with a one-word brand
+    assert match.match_line("Acme Home heater", profiles)["verdict"] == "check"
+    assert match.match_line("Cozynest pillow", profiles)["verdict"] == "none"

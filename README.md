@@ -39,7 +39,7 @@ There's no language model anywhere. The router is rules in `recall_agent/agent.p
 ## Run it
 
 ```bash
-python -m pytest -q                                   # 42 tests, offline, standard library + pytest
+python -m pytest -q                                   # 46 tests, offline, standard library + pytest
 python -m recall_agent "2003 Honda Accord"            # live calls from your machine
 python -m recall_agent "Check VIN 1HGCM82633A004352"
 python -m recall_agent --file my_products.txt
