@@ -167,5 +167,100 @@
    }
   ],
   "ProductUPCs": []
+ },
+ {
+  "RecallID": 6,
+  "RecallNumber": "90006",
+  "RecallDate": "2026-05-05T00:00:00",
+  "URL": "https://example.invalid/recall/90006",
+  "Title": "Bicycle Helmets Recalled Due to Risk of Head Injury; Sold on Amazon",
+  "Products": [
+   {
+    "Name": "Velomax Adult Bike Helmets",
+    "Model": "",
+    "Type": "",
+    "NumberOfUnits": "About 400"
+   }
+  ],
+  "Manufacturers": [],
+  "Importers": [],
+  "Distributors": [],
+  "Hazards": [
+   {
+    "Name": "Made up."
+   }
+  ],
+  "Remedies": [
+   {
+    "Name": "Refund"
+   }
+  ],
+  "ProductUPCs": []
+ },
+ {
+  "RecallID": 7,
+  "RecallNumber": "90007",
+  "RecallDate": "2026-05-06T00:00:00",
+  "URL": "https://example.invalid/recall/90007",
+  "Title": "Ridewell Recalls E-Bikes Due to Fall Hazard",
+  "Products": [
+   {
+    "Name": "Ridewell e-bikes",
+    "Model": "",
+    "Type": "Bicycles and Accessories",
+    "NumberOfUnits": "About 100"
+   }
+  ],
+  "Manufacturers": [
+   {
+    "Name": "Ridewell Inc., of Portland, Oregon"
+   }
+  ],
+  "Importers": [],
+  "Distributors": [],
+  "Hazards": [
+   {
+    "Name": "Made up."
+   }
+  ],
+  "Remedies": [
+   {
+    "Name": "Refund"
+   }
+  ],
+  "ProductUPCs": []
+ },
+ {
+  "RecallID": 8,
+  "RecallNumber": "90008",
+  "RecallDate": "2026-05-07T00:00:00",
+  "URL": "https://example.invalid/recall/90008",
+  "Title": "Hairco Recalls Over One Million Zestro Grill Brushes Due to Ingestion Hazard",
+  "Products": [
+   {
+    "Name": "Metal Wire Bristle Grill Brushes",
+    "Model": "",
+    "Type": "",
+    "NumberOfUnits": "1 million"
+   }
+  ],
+  "Manufacturers": [
+   {
+    "Name": "Hairco LLC of Newark, New Jersey"
+   }
+  ],
+  "Importers": [],
+  "Distributors": [],
+  "Hazards": [
+   {
+    "Name": "Made up."
+   }
+  ],
+  "Remedies": [
+   {
+    "Name": "Refund"
+   }
+  ],
+  "ProductUPCs": []
  }
 ]

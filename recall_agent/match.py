@@ -74,31 +74,65 @@ def _company(name: str) -> str:
     return " ".join(w[:2])
 
 
-def recall_profile(r: dict) -> dict:
-    """Pull out what matching needs from one CPSC recall record."""
+def category_words(recalls: list[dict]) -> set[str]:
+    """Words CPSC uses in its product-type field ("Bicycles and Accessories", "Heaters"...), singular and plural.
+
+    A brand guessed from a title or product name is dropped if it's one of these, so
+    "Bicycle Helmets Recalled ..." doesn't make "bicycle" a brand.
+    """
+    out = set()
+    for r in recalls:
+        for p in r.get("Products") or []:
+            for w in words(p.get("Type") or ""):
+                out |= {w, stem(w)}
+    return out
+
+
+def recall_profile(r: dict, common: set[str] | None = None) -> dict:
+    """Pull out what matching needs from one CPSC recall record.
+
+    common: words that can't be brands (see category_words). Defaults to this record's own types.
+    """
+    common = (common if common is not None else category_words([r])) | NOT_BRAND
     title = r.get("Title") or ""
-    brands = set()
+    product_names = " ".join(p.get("Name") or "" for p in r.get("Products") or [])
+    guesses = set()  # brands guessed from wording; filtered below
+
+    def guess(text: str) -> None:
+        b = _company(text)
+        if not b or re.search(r"\d", b) or len(b.split()[0]) < 3:
+            return
+        if not ({b.split()[0], stem(b.split()[0])} & common):
+            guesses.add(b)
+
     # "Acme Recalls ...", "Acme Expands Recall of ...", "Acme Reannounces Recall of ..."
     m = re.match(r"(.+?)\s+(?:(?:expands|reannounces|announces|issues)\s+)?(?:recalls|recall)\b", title, flags=re.I)
     if m:
-        brands.add(_company(m.group(1)))
-    # "Acme Power Banks Recalled ..."
+        guess(m.group(1))
+    # "Acme Power Banks Recalled ..." (often a product, not a brand: "Bicycle Helmets Recalled")
     m = re.match(r"(.+?)\s+(?:[\w’'-]+\s+){0,4}recalled\b", title, flags=re.I)
     if m:
-        brands.add(_company(m.group(1)))
-    # "... Recall of Zestro Grill Brushes": the product's own brand, after "recall of"
-    m = re.search(r"\brecall of ([A-Z][\w&’'-]+)", title)
-    if m:
-        brands.add(_company(m.group(1)))
-    # Product names usually start with the brand: "Zestro grill brushes"
+        guess(m.group(1))
+    # "Conair Recalls Over One Million Zestro Grill Brushes", "... Expands Recall of Zestro ...":
+    # the word after the count is the product's brand when the product name doesn't contain it.
+    m = re.search(r"\b(?:[Rr]ecalls|[Rr]ecall of)\s+(?:(?i:(?:over|about|nearly|more than|approximately)\s+)?"
+                  r"(?:[\d.,]+|(?i:one|two|three|four|five|six|seven|eight|nine))\s*(?i:million|thousand)?\s+)?"
+                  r"([A-Z][\w&’'+-]+)", title)
+    if m and m.group(1).lower() not in words(product_names):
+        guess(m.group(1))
+    # Product names often start with the brand: "Zestro grill brushes"
     for p in r.get("Products") or []:
         first = (p.get("Name") or "").split(" ")[0]
-        if first[:1].isupper() and re.sub(r"[’']s$", "", first.lower()) not in NOT_BRAND:
-            brands.add(_company(first))
+        if first[:1].isupper():
+            guess(re.sub(r"[’']s$", "", first))
+    brands = set(guesses)
     for key in ("Manufacturers", "Importers", "Distributors"):
         for c in r.get(key) or []:
             if c.get("Name"):
                 brands.add(_company(c["Name"]))
+                d = re.search(r"\bdba\s+([\w&’'+-]+)", c["Name"], flags=re.I)  # "Conair LLC, dba Cuisinart"
+                if d:
+                    brands.add(_company(d.group(1)))
     brands = {b for b in brands if b and len(b) >= 3}
     product_text = " ".join([title] + [f"{p.get('Name', '')} {p.get('Model', '')} {p.get('Type', '')}"
                                        for p in r.get("Products") or []])
@@ -156,7 +190,8 @@ def match_line(line: str, profiles: list[dict]) -> dict:
 
 
 def check_catalogue(lines: list[str], recalls: list[dict]) -> dict:
-    profiles = [recall_profile(r) for r in recalls]
+    common = category_words(recalls)
+    profiles = [recall_profile(r, common) for r in recalls]
     results = [match_line(line, profiles) for line in lines]
     order = {"recalled": 0, "check": 1, "none": 2}
     results.sort(key=lambda x: order[x["verdict"]])

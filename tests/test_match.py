@@ -75,7 +75,7 @@ def test_catalogue_summary_sorts_worst_first():
     out = match.check_catalogue(lines, RECALLS)
     assert out["counts"] == {"recalled": 1, "check": 1, "none": 1}
     assert [r["verdict"] for r in out["results"]] == ["recalled", "check", "none"]
-    assert (out["from"], out["to"], out["recalls_checked"]) == ("2026-03-01", "2026-10-20", 5)
+    assert (out["from"], out["to"], out["recalls_checked"]) == ("2026-03-01", "2026-10-20", 8)
 
 
 def test_brand_after_expands_recall_of(profiles):
@@ -90,3 +90,24 @@ def test_generic_first_words_are_not_brands():
     p = match.recall_profile({"Title": "Acme Recalls Space Heaters", "Products": [
         {"Name": "Children's space heaters", "Model": "", "Type": ""}, {"Name": "Space heaters", "Model": "", "Type": ""}]})
     assert p["brands"] == ["acme"]
+
+
+def test_product_word_titles_dont_make_brands():
+    common = match.category_words(RECALLS)
+    assert "bicycle" in common
+    p = match.recall_profile(RECALLS[5], common)  # "Bicycle Helmets Recalled ..."
+    assert p["brands"] == ["velomax"]
+    assert match.match_line("Bicycle helmet adult", [p])["verdict"] == "none"
+    assert match.match_line("Velomax bike helmet", [p])["verdict"] == "check"
+
+
+def test_brand_after_a_count_in_the_title():
+    p = match.recall_profile(RECALLS[7], match.category_words(RECALLS))  # "Recalls Over One Million Zestro ..."
+    assert {"zestro", "hairco"} <= set(p["brands"])
+    assert match.match_line("Zestro BBQ grill brush", [p])["verdict"] == "check"
+
+
+def test_dba_name_is_a_brand():
+    p = match.recall_profile({"Title": "Hairco Recalls Gas Grills", "Products": [{"Name": "Gas grills", "Type": ""}],
+                              "Manufacturers": [{"Name": "Hairco LLC, of Newark, New Jersey, dba Zestro"}]})
+    assert "zestro" in p["brands"]
