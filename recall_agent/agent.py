@@ -161,11 +161,22 @@ def _last(obs: list[dict], tool: str) -> dict | None:
     return None
 
 
+def iso_date(s: str | None) -> str | None:
+    """NHTSA sends report dates day first ("27/06/2019"), whatever the caller's language. Checked 4 Nov 2026."""
+    m = re.fullmatch(r"(\d{2})/(\d{2})/(\d{4})", (s or "").strip())
+    if not m:
+        return s
+    try:
+        return dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1))).isoformat()
+    except ValueError:
+        return s
+
+
 def _vehicle_answer(make: str, model: str, year: int, data: dict, via_vin: str | None) -> dict:
     rs = data.get("results") or []
     recalls = [{
         "campaign": r.get("NHTSACampaignNumber"),
-        "date": r.get("ReportReceivedDate"),
+        "date": iso_date(r.get("ReportReceivedDate")),
         "component": r.get("Component"),
         "summary": (r.get("Summary") or "")[:400],
         "consequence": (r.get("Consequence") or "")[:300],
@@ -233,7 +244,7 @@ def step(request: str, observations: list[dict], today: dt.date | None = None) -
         rec = _last(observations, "nhtsa_recalls")
         if not rec:
             return _call("nhtsa_recalls", {"make": make, "model": model, "year": int(year)},
-                         f"list recalls for the {year} {make} {model}")
+                         f"list recalls for the {year} {make.title()} {model}")
         return {"action": "done", "understood": u,
                 "answer": _vehicle_answer(make.lower(), model, int(year), rec["data"], u["vin"])}
 
@@ -242,7 +253,7 @@ def step(request: str, observations: list[dict], today: dt.date | None = None) -
     models = _last(observations, "vpic_models")
     if not models:
         return _call("vpic_models", {"make": make, "year": year},
-                     f"confirm NHTSA knows a {year} {make} '{model}' before trusting an empty answer")
+                     f"confirm NHTSA lists a {year} {make.replace('-', ' ').title()} '{model}' before trusting an empty answer")
     names = sorted({r.get("Model_Name", "") for r in models["data"].get("Results") or [] if r.get("Model_Name")})
     if not names:
         return {"action": "stop", "understood": u,
@@ -267,7 +278,7 @@ def step(request: str, observations: list[dict], today: dt.date | None = None) -
     rec = _last(observations, "nhtsa_recalls")
     if not rec:
         return _call("nhtsa_recalls", {"make": make, "model": canon, "year": year},
-                     f"list recalls for the {year} {make} {canon}")
+                     f"list recalls for the {year} {make.replace('-', ' ').title()} {canon}")
     ans = _vehicle_answer(make, canon, year, rec["data"], None)
     if used != model:
         ans["text"] += f" (NHTSA lists it as '{canon}', so that's what was checked, not '{model}'.)"

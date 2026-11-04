@@ -159,3 +159,11 @@ def test_longer_model_name_falls_back_to_the_listed_model():
     s, calls = run("2003 Honda Civic Type R")
     assert s["action"] == "done" and s["answer"]["vehicle"] == "2003 Honda Civic"
     assert "NHTSA lists it as 'Civic'" in s["answer"]["text"]
+
+
+def test_nhtsa_dates_are_day_first():
+    assert agent.iso_date("27/06/2019") == "2019-06-27"
+    assert agent.iso_date("06/03/2019") == "2019-03-06"
+    assert agent.iso_date("not a date") == "not a date"
+    s, _ = run("2003 Honda Accord")
+    assert [r["date"] for r in s["answer"]["recalls"]] == ["2021-04-03", "2020-02-01"]

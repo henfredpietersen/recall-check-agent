@@ -30,14 +30,16 @@ Plain text rules (`recall_agent/match.py`):
 - **check**: the brand matches and at least two product words overlap, or a model number of six or more characters matches without the brand.
 - **no match**: nothing above.
 
-Brands come from the recall title ("Acme Recalls …", "Acme Power Banks Recalled …") and the listed manufacturers, importers and distributors. A brand must match as whole words, so "Acmeville" doesn't match "Acme". Sizes like "10000mAh" or "12oz" don't count as model numbers.
+Brands come from the recall title ("Acme Recalls …", "Acme Power Banks Recalled …", "… Expands Recall of Acme …"), the first word of each product name, and the listed manufacturers, importers and distributors. A brand must match as whole words, so "Acmeville" doesn't match "Acme". Sizes like "10000mAh" or "12oz" don't count as model numbers, and plurals are folded ("brushes" matches "brush").
+
+On 4 November 2026 I ran a list of 20 everyday unbranded and big-brand products against the 575 CPSC recalls from the previous 12 months: none were flagged. That shows it doesn't raise false alarms on that list. It doesn't prove it catches everything; see "What this isn't".
 
 There's no language model anywhere. The router is rules in `recall_agent/agent.py`, which makes it predictable and testable, and every decision can be shown on the page.
 
 ## Run it
 
 ```bash
-python -m pytest -q                                   # 39 tests, offline, standard library + pytest
+python -m pytest -q                                   # 42 tests, offline, standard library + pytest
 python -m recall_agent "2003 Honda Accord"            # live calls from your machine
 python -m recall_agent "Check VIN 1HGCM82633A004352"
 python -m recall_agent --file my_products.txt

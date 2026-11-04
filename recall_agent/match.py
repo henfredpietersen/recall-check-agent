@@ -24,11 +24,30 @@ GENERIC = {"recall", "recalls", "recalled", "due", "risk", "serious", "injury", 
            "exclusively", "with", "and", "the", "for", "of", "to", "in", "on", "or", "a", "an", "from", "by",
            "model", "models", "cup", "inch", "pack", "set", "sets", "new", "black", "white", "kids", "children",
            "childrens", "brand", "units", "about", "warning", "warnings", "federal", "ban", "banned", "products",
-           "product", "temu", "walmart", "shein", "ebay", "tiktok"}
+           "product", "temu", "walmart", "shein", "ebay", "tiktok", "expands", "reannounces", "announces", "issues",
+           "ingestion", "suffocation", "choking", "entrapment", "tip", "over", "poisoning", "laceration", "strangulation",
+           "electrocution", "shock", "carbon", "monoxide", "drowning", "injuries", "consumers", "impact"}
+
+
+NOT_BRAND = GENERIC | {"children", "child", "women", "womens", "men", "mens", "boys", "girls", "baby", "babies", "infant",
+                       "infants", "toddler", "kid", "adult", "adults", "youth", "portable", "electric", "rechargeable",
+                       "wooden", "plastic", "glass", "metal", "stainless", "steel", "gas", "fabric", "cordless", "mini",
+                       "large", "small", "these", "this", "certain", "various", "all", "two", "three", "one",
+                       "nine", "six", "four", "five", "multiple", "assorted", "magnetic", "battery", "lithium", "dresser",
+                       "dressers", "space", "heaters", "heater", "power", "toy", "toys", "chest", "bike", "bikes"}
 
 
 def words(text: str) -> list[str]:
     return WORD.findall((text or "").lower())
+
+
+def stem(w: str) -> str:
+    """Plural to singular, roughly: brushes -> brush, heaters -> heater, glass stays glass."""
+    if len(w) > 4 and w.endswith("es") and w[:-2].endswith(("sh", "ch", "x", "ss")):
+        return w[:-2]
+    if len(w) > 3 and w.endswith("s") and not w.endswith(("ss", "us", "is")):
+        return w[:-1]
+    return w
 
 
 def squash(code: str) -> str:
@@ -59,12 +78,23 @@ def recall_profile(r: dict) -> dict:
     """Pull out what matching needs from one CPSC recall record."""
     title = r.get("Title") or ""
     brands = set()
-    m = re.match(r"(.+?)\s+(?:recalls|recall)\b", title, flags=re.I)
+    # "Acme Recalls ...", "Acme Expands Recall of ...", "Acme Reannounces Recall of ..."
+    m = re.match(r"(.+?)\s+(?:(?:expands|reannounces|announces|issues)\s+)?(?:recalls|recall)\b", title, flags=re.I)
     if m:
         brands.add(_company(m.group(1)))
+    # "Acme Power Banks Recalled ..."
     m = re.match(r"(.+?)\s+(?:[\w’'-]+\s+){0,4}recalled\b", title, flags=re.I)
     if m:
         brands.add(_company(m.group(1)))
+    # "... Recall of Zestro Grill Brushes": the product's own brand, after "recall of"
+    m = re.search(r"\brecall of ([A-Z][\w&’'-]+)", title)
+    if m:
+        brands.add(_company(m.group(1)))
+    # Product names usually start with the brand: "Zestro grill brushes"
+    for p in r.get("Products") or []:
+        first = (p.get("Name") or "").split(" ")[0]
+        if first[:1].isupper() and re.sub(r"[’']s$", "", first.lower()) not in NOT_BRAND:
+            brands.add(_company(first))
     for key in ("Manufacturers", "Importers", "Distributors"):
         for c in r.get(key) or []:
             if c.get("Name"):
@@ -82,7 +112,7 @@ def recall_profile(r: dict) -> dict:
         "brands": sorted(brands),
         "codes": codes(product_text),
         "upcs": {u for u in upcs if u},
-        "product_words": {w for w in words(product_text) if w not in GENERIC and w not in brand_words and len(w) > 2},
+        "product_words": {stem(w) for w in words(product_text) if w not in GENERIC and w not in brand_words and len(w) > 2},
         "hazard": ((r.get("Hazards") or [{}])[0].get("Name") or "")[:240],
         "remedy": ((r.get("Remedies") or [{}])[0].get("Name") or "")[:240],
     }
@@ -102,7 +132,7 @@ def match_line(line: str, profiles: list[dict]) -> dict:
         reasons, verdict = [], None
         brand = next((b for b in p["brands"] if _has_brand(lw, b)), None)
         shared_codes = sorted(lcodes & p["codes"])
-        shared_words = sorted(set(lw) & p["product_words"])
+        shared_words = sorted({stem(w) for w in lw} & p["product_words"])
         if lupcs & p["upcs"]:
             verdict = "recalled"
             reasons.append(f"UPC {sorted(lupcs & p['upcs'])[0]}")

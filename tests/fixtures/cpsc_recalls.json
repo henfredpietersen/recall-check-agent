@@ -1,23 +1,171 @@
 [
- {"RecallID": 1, "RecallNumber": "90001", "RecallDate": "2026-10-20T00:00:00", "URL": "https://example.invalid/recall/90001",
+ {
+  "RecallID": 1,
+  "RecallNumber": "90001",
+  "RecallDate": "2026-10-20T00:00:00",
+  "URL": "https://example.invalid/recall/90001",
   "Title": "Acme Home Recalls AH-2041 Space Heaters Due to Fire Hazard",
-  "Products": [{"Name": "Acme Home ceramic space heaters", "Model": "AH-2041", "Type": "Heaters", "NumberOfUnits": "About 1,000"}],
-  "Manufacturers": [], "Importers": [{"Name": "Acme Home Inc., of Dover, Delaware"}], "Distributors": [],
-  "Hazards": [{"Name": "The heater can overheat, posing a fire hazard."}], "Remedies": [{"Name": "Stop using and contact Acme Home for a refund."}],
-  "ProductUPCs": [{"UPC": "012345678905"}]},
- {"RecallID": 2, "RecallNumber": "90002", "RecallDate": "2026-09-02T00:00:00", "URL": "https://example.invalid/recall/90002",
+  "Products": [
+   {
+    "Name": "Acme Home ceramic space heaters",
+    "Model": "AH-2041",
+    "Type": "Heaters",
+    "NumberOfUnits": "About 1,000"
+   }
+  ],
+  "Manufacturers": [],
+  "Importers": [
+   {
+    "Name": "Acme Home Inc., of Dover, Delaware"
+   }
+  ],
+  "Distributors": [],
+  "Hazards": [
+   {
+    "Name": "The heater can overheat, posing a fire hazard."
+   }
+  ],
+  "Remedies": [
+   {
+    "Name": "Stop using and contact Acme Home for a refund."
+   }
+  ],
+  "ProductUPCs": [
+   {
+    "UPC": "012345678905"
+   }
+  ]
+ },
+ {
+  "RecallID": 2,
+  "RecallNumber": "90002",
+  "RecallDate": "2026-09-02T00:00:00",
+  "URL": "https://example.invalid/recall/90002",
   "Title": "Brightlite Power Banks Recalled Due to Risk of Serious Injury from Fire Hazard; Sold Exclusively on Amazon",
-  "Products": [{"Name": "Brightlite 10000mAh portable power banks", "Model": "", "Type": "Batteries", "NumberOfUnits": "About 5,000"}],
-  "Manufacturers": [{"Name": "Shenzhen Brightlite Technology Co., Ltd., of China"}], "Importers": [], "Distributors": [],
-  "Hazards": [{"Name": "The power banks can overheat."}], "Remedies": [{"Name": "Refund"}], "ProductUPCs": []},
- {"RecallID": 3, "RecallNumber": "90003", "RecallDate": "2026-06-15T00:00:00", "URL": "https://example.invalid/recall/90003",
+  "Products": [
+   {
+    "Name": "Brightlite 10000mAh portable power banks",
+    "Model": "",
+    "Type": "Batteries",
+    "NumberOfUnits": "About 5,000"
+   }
+  ],
+  "Manufacturers": [
+   {
+    "Name": "Shenzhen Brightlite Technology Co., Ltd., of China"
+   }
+  ],
+  "Importers": [],
+  "Distributors": [],
+  "Hazards": [
+   {
+    "Name": "The power banks can overheat."
+   }
+  ],
+  "Remedies": [
+   {
+    "Name": "Refund"
+   }
+  ],
+  "ProductUPCs": []
+ },
+ {
+  "RecallID": 3,
+  "RecallNumber": "90003",
+  "RecallDate": "2026-06-15T00:00:00",
+  "URL": "https://example.invalid/recall/90003",
   "Title": "Cozynest Recalls Infant Loungers Due to Suffocation Hazard",
-  "Products": [{"Name": "Cozynest baby lounger pillows for infants", "Model": "", "Type": "Infant Products", "NumberOfUnits": "About 300"}],
-  "Manufacturers": [], "Importers": [], "Distributors": [{"Name": "Cozynest LLC, of Austin, Texas"}],
-  "Hazards": [{"Name": "Infants can suffocate."}], "Remedies": [{"Name": "Refund"}], "ProductUPCs": []},
- {"RecallID": 4, "RecallNumber": "90004", "RecallDate": "2026-03-01T00:00:00", "URL": "https://example.invalid/recall/90004",
+  "Products": [
+   {
+    "Name": "Cozynest baby lounger pillows for infants",
+    "Model": "",
+    "Type": "Infant Products",
+    "NumberOfUnits": "About 300"
+   }
+  ],
+  "Manufacturers": [],
+  "Importers": [],
+  "Distributors": [
+   {
+    "Name": "Cozynest LLC, of Austin, Texas"
+   }
+  ],
+  "Hazards": [
+   {
+    "Name": "Infants can suffocate."
+   }
+  ],
+  "Remedies": [
+   {
+    "Name": "Refund"
+   }
+  ],
+  "ProductUPCs": []
+ },
+ {
+  "RecallID": 4,
+  "RecallNumber": "90004",
+  "RecallDate": "2026-03-01T00:00:00",
+  "URL": "https://example.invalid/recall/90004",
   "Title": "Northpeak Recalls Climbing Harnesses Due to Fall Hazard",
-  "Products": [{"Name": "Northpeak climbing harnesses", "Model": "NP-H300", "Type": "Sports Equipment", "NumberOfUnits": "About 800"}],
-  "Manufacturers": [{"Name": "Northpeak Outdoor Ltd., of Leeds, UK"}], "Importers": [], "Distributors": [],
-  "Hazards": [{"Name": "The buckle can open."}], "Remedies": [{"Name": "Replace"}], "ProductUPCs": []}
+  "Products": [
+   {
+    "Name": "Northpeak climbing harnesses",
+    "Model": "NP-H300",
+    "Type": "Sports Equipment",
+    "NumberOfUnits": "About 800"
+   }
+  ],
+  "Manufacturers": [
+   {
+    "Name": "Northpeak Outdoor Ltd., of Leeds, UK"
+   }
+  ],
+  "Importers": [],
+  "Distributors": [],
+  "Hazards": [
+   {
+    "Name": "The buckle can open."
+   }
+  ],
+  "Remedies": [
+   {
+    "Name": "Replace"
+   }
+  ],
+  "ProductUPCs": []
+ },
+ {
+  "RecallID": 5,
+  "RecallNumber": "90005",
+  "RecallDate": "2026-08-12T00:00:00",
+  "URL": "https://example.invalid/recall/90005",
+  "Title": "Hairco Expands Recall of Zestro Grill Brushes Due to Ingestion Hazard",
+  "Products": [
+   {
+    "Name": "Zestro grill brushes with wire bristles",
+    "Model": "",
+    "Type": "Grills and Outdoor Cooking",
+    "NumberOfUnits": "About 2,000"
+   }
+  ],
+  "Manufacturers": [
+   {
+    "Name": "Hairco Corporation, of Newark, New Jersey"
+   }
+  ],
+  "Importers": [],
+  "Distributors": [],
+  "Hazards": [
+   {
+    "Name": "Wire bristles can come loose."
+   }
+  ],
+  "Remedies": [
+   {
+    "Name": "Refund"
+   }
+  ],
+  "ProductUPCs": []
+ }
 ]
